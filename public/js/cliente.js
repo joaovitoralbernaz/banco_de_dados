@@ -1,15 +1,22 @@
 // ngc que wagner fez
 async function cadastrarCliente(event) {
     event.preventDefault();
-
-    let nome_cliente = document.getElementById("nome").value;
+    event.aplicarMascaras();
+    let nome_cliente = document.getElementById("cliente-nome").value;
 
     const cliente = {
         nome: nome_cliente,
-        telefone: document.getElementById("telefone").value,
-        email: document.getElementById("email").value,
-        cpf: document.getElementById("cpf").value,
-        endereco: document.getElementById("endereco").value
+        telefone: document.getElementById("cliente-telefone").value,
+        email: document.getElementById("cliente-email").value,
+        cpf: document.getElementById("cliente-cpf").value,
+        endereco: document.getElementById("cliente-endereco").value,
+        cep: document.getElementById("cliente-cep").value,
+        logradouro: document.getElementById("cliente-logradouro").value,
+        numero: document.getElementById("cliente-numero").value,
+        complemento: document.getElementById("cliente-complemento").value,
+        bairro: document.getElementById("cliente-bairro").value,
+        cidade: document.getElementById("cliente-cidade").value,
+        estado: document.getElementById("cliente-estado").value
     };
 
     try {
@@ -26,14 +33,21 @@ async function cadastrarCliente(event) {
             alert("Cliente cadastrado com sucesso!async function cadastrarCliente(event) {
     event.preventDefault();
 
-    let nome_cliente = document.getElementById("nome").value;
+    let nome_cliente = document.getElementById("cliente-nome").value;
 
     const cliente = {
         nome: nome_cliente,
-        telefone: document.getElementById("telefone").value,
-        email: document.getElementById("email").value,
-        cpf: document.getElementById("cpf").value,
-        endereco: document.getElementById("endereco").value
+        telefone: document.getElementById("cliente-telefone").value,
+        email: document.getElementById("cliente-email").value,
+        cpf: document.getElementById("cliente-cpf").value,
+        endereco: document.getElementById("cliente-endereco").value,
+        cep: document.getElementById("cliente-cep").value,
+        logradouro: document.getElementById("cliente-logradouro").value,
+        numero: document.getElementById("cliente-numero").value,
+        complemento: document.getElementById("cliente-complemento").value,
+        bairro: document.getElementById("cliente-bairro").value,
+        cidade: document.getElementById("cliente-cidade").value,
+        estado: document.getElementById("cliente-estado").value
     };
 
     try {
@@ -45,10 +59,17 @@ async function cadastrarCliente(event) {
 
     const cliente = {
         nome: nome_cliente,
-        telefone: document.getElementById("telefone").value,
-        email: document.getElementById("email").value,
-        cpf: document.getElementById("cpf").value,
-        endereco: document.getElementById("endereco").value
+        telefone: document.getElementById("cliente-telefone").value,
+        email: document.getElementById("cliente-email").value,
+        cpf: document.getElementById("cliente-cpf").value,
+        endereco: document.getElementById("cliente-endereco").value,
+        cep: document.getElementById("cliente-cep").value,
+        logradouro: document.getElementById("cliente-logradouro").value,
+        numero: document.getElementById("cliente-numero").value,
+        complemento: document.getElementById("cliente-complemento").value,
+        bairro: document.getElementById("cliente-bairro").value,
+        cidade: document.getElementById("cliente-cidade").value,
+        estado: document.getElementById("cliente-estado").value
     };
 
     try {
@@ -100,9 +121,9 @@ async function listarClientes() {
                     <td>${cliente.id}</td>
                     <td>${cliente.nome}</td>
                     <td>${cliente.cpf}</td>
-                    <td>${cliente.email}</td>
                     <td>${cliente.telefone}</td>
-                    <td>${cliente.endereco}</td>
+                    <td>${cliente.email}</td>
+                    <td>${cliente.cidade}</td>
                 `;
                 tabela.appendChild(linha);
             });
@@ -203,8 +224,8 @@ async function listarClientes() {
                     <td>${cliente.id}</td>
                     <td>${cliente.nome}</td>
                     <td>${cliente.cpf}</td>
-                    <td>${cliente.email}</td>
                     <td>${cliente.telefone}</td>
+                    <td>${cliente.email}</td>
                     <td>${cliente.endereco}</td>
                 `;
                 tabela.appendChild(linha);
@@ -402,7 +423,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listener para busca de CEP
     cepInput.addEventListener('blur', buscarCEP);
 });
-
+*/
 // Aplicar máscaras de formatação
 function aplicarMascaras() {
     // Máscara para CPF
@@ -469,7 +490,7 @@ async function buscarCEP() {
             exibirNotificacao('Erro ao buscar CEP. Verifique sua conexão.', 'erro');
         }
     }
-} */
+}
 
 // Carregar dados do localStorage
 /* function carregarClientes() {
