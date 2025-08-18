@@ -1,23 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
-
-
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Serve os arquivos estáticos da pasta "public"
-app.use(express.static('public'));
+app.use(express.static("public"));
 
 // Configura o body-parser para ler JSON
 app.use(bodyParser.json());
 
 // Conexão com o banco de dados SQLite
-const db = new sqlite3.Database('./database.db', (err) => {
+const db = new sqlite3.Database("./database.db", (err) => {
     if (err) {
-        console.error('Erro ao conectar ao banco de dados:', err.message);
+        console.error("Erro ao conectar ao banco de dados:", err.message);
     } else {
-        console.log('Conectado ao banco de dados SQLite.');
+        console.log("Conectado ao banco de dados SQLite.");
     }
 });
 
@@ -30,31 +28,43 @@ db.serialize(() => {
             cpf TEXT NOT NULL UNIQUE,
             email TEXT,
             telefone TEXT,
-            endereco TEXT
+            logradouro VARCHAR(50) NOT NULL,
+            numero VARCHAR(5) NOT NULL,
+            complemento VARCHAR(20),
+            bairro VARCHAR(30) NOT NULL,
+            cidade VARCHAR(20) NOT NULL,
+            estado VARCHAR(2) NOT NULL,
+            cep VARCHAR(9) NOT NULL
         )
     `);
-    
 
-    console.log('Tabelas criadas com sucesso.');
+
+    console.log("Tabelas criadas com sucesso.");
 });
 
 
+
 ///////////////////////////// Rotas para Clientes /////////////////////////////
-///////////////////////////// Rotas para Clientes /////////////////////////////
-///////////////////////////// Rotas para Clientes /////////////////////////////
+
 
 // Cadastrar cliente
-app.post('/clientes', (req, res) => {
-    const { nome, cpf, email, telefone, endereco } = req.body;
+app.post("/clientes", (req, res) => {
+    const { nome, cpf, email, telefone, logradouro, numero, complemento, bairro, cidade, estado, cep } = req.body;
 
+    // Validações básicas
     if (!nome || !cpf) {
-        return res.status(400).send('Nome e CPF são obrigatórios.');
+        return res.status(400).json({ message: "Nome e CPF são obrigatórios." });
     }
 
-    const query = `INSERT INTO clientes (nome, cpf, email, telefone, endereco) VALUES (?, ?, ?, ?, ?)`;
-    db.run(query, [nome, cpf, email, telefone, endereco], function (err) {
+
+
+
+    const query = `INSERT INTO clientes (nome, cpf, email, telefone, logradouro, numero, complemento, bairro, cidade, estado, cep) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    db.run(
+        query,
+        [nome, cpf, email, telefone, logradouro, numero, complemento, bairro, cidade, estado, cep], function (err) {
         if (err) {
-            return res.status(500).send('Erro ao cadastrar cliente.');
+            return res.status(500).send('Erro ao cadastrar cliente....');
         }
         res.status(201).send({ id: this.lastID, message: 'Cliente cadastrado com sucesso.' });
     });
@@ -89,28 +99,6 @@ app.get('/clientes', (req, res) => {
         });
     }
 });
-
-
-
-// Atualizar cliente
-app.put('/clientes/cpf/:cpf', (req, res) => {
-    const { cpf } = req.params;
-    const { nome, email, telefone, endereco } = req.body;
-
-    const query = `UPDATE clientes SET nome = ?, email = ?, telefone = ?, endereco = ? WHERE cpf = ?`;
-    db.run(query, [nome, email, telefone, endereco, cpf], function (err) {
-        if (err) {
-            return res.status(500).send('Erro ao atualizar cliente.');
-        }
-        if (this.changes === 0) {
-            return res.status(404).send('Cliente não encontrado.');
-        }
-        res.send('Cliente atualizado com sucesso.');
-    });
-});
-
-
-
 
 
 // Teste para verificar se o servidor está rodando

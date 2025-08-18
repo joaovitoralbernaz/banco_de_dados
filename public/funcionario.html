@@ -17,7 +17,7 @@
                 <span></span>
             </div>
             <div class="nav-links" id="navLinks">
-                <a href="index.html">Início</a>
+                <a href="public/index.html">Início</a>
                 <a href="index.html">Cadastros</a>
                 <a href="movimento.html">Movimento</a>
                 <a href="relatorio.html">Relatório</a>
@@ -42,17 +42,84 @@
                             <input type="text" id="funcionario-cpf" name="funcionario-cpf" placeholder="000.000.000-00" required>
                         </div>
                         <div class="form-group">
-                            <label for="funcionario-telefone">Telefone</label>
-                            <input type="text" id="funcionario-telefone" name="funcionario-telefone" placeholder="(00) 00000-0000">
-                        </div>
-                        <div class="form-group">
                             <label for="funcionario-email">E-mail</label>
                             <input type="email" id="funcionario-email" name="funcionario-email" placeholder="exemplo@email.com">
                         </div>
                         <div class="form-group">
-                            <label for="funcionario-endereco">Endereço</label>
-                            <input type="text" id="funcionario-endereco" name="funcionario-endereco" placeholder="Rua, número, bairro">
+                            <label for="funcionario-telefone">Telefone</label>
+                            <input type="text" id="funcionario-telefone" name="funcionario-telefone" placeholder="(00) 00000-0000">
                         </div>
+                        <!-- Seção de Endereço -->
+                        <fieldset class="endereco-section">
+                            <legend>Endereço</legend>
+
+                            <div class="form-row">
+                                <div class="form-group form-group-small">
+                                    <label for="funcionario-cep">CEP</label>
+                                    <input type="text" id="funcionario-cep" name="funcionario-cep" placeholder="00000-000">
+                                </div>
+                                <div class="form-group form-group-large">
+                                    <label for="funcionario-logradouro">Logradouro</label>
+                                    <input type="text" id="funcionario-logradouro" name="funcionario-logradouro" placeholder="Rua, Avenida, etc.">
+                                </div>
+                                <div class="form-group form-group-small">
+                                    <label for="funcionario-numero">Número</label>
+                                    <input type="text" id="funcionario-numero" name="funcionario-numero" placeholder="123">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="funcionario-complemento">Complemento</label>
+                                    <input type="text" id="funcionario-complemento" name="funcionario-complemento" placeholder="Apto, Bloco, etc. (opcional)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="funcionario-bairro">Bairro</label>
+                                    <input type="text" id="funcionario-bairro" name="funcionario-bairro" placeholder="Nome do bairro">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="funcionario-cidade">Cidade</label>
+                                    <input type="text" id="funcionario-cidade" name="funcionario-cidade" placeholder="Nome da cidade">
+                                </div>
+                                <div class="form-group form-group-small">
+                                    <label for="funcionario-estado">Estado</label>
+                                    <select id="funcionario-estado" name="funcionario-estado">
+                                        <option value="">Selecione</option>
+                                        <option value="AC">AC</option>
+                                        <option value="AL">AL</option>
+                                        <option value="AP">AP</option>
+                                        <option value="AM">AM</option>
+                                        <option value="BA">BA</option>
+                                        <option value="CE">CE</option>
+                                        <option value="DF">DF</option>
+                                        <option value="ES">ES</option>
+                                        <option value="GO">GO</option>
+                                        <option value="MA">MA</option>
+                                        <option value="MT">MT</option>
+                                        <option value="MS">MS</option>
+                                        <option value="MG">MG</option>
+                                        <option value="PA">PA</option>
+                                        <option value="PB">PB</option>
+                                        <option value="PR">PR</option>
+                                        <option value="PE">PE</option>
+                                        <option value="PI">PI</option>
+                                        <option value="RJ">RJ</option>
+                                        <option value="RN">RN</option>
+                                        <option value="RS">RS</option>
+                                        <option value="RO">RO</option>
+                                        <option value="RR">RR</option>
+                                        <option value="SC">SC</option>
+                                        <option value="SP">SP</option>
+                                        <option value="SE">SE</option>
+                                        <option value="TO">TO</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+                        
                         <div class="form-group">
                             <label for="funcionario-cargo">Cargo</label>
                             <select id="funcionario-cargo" name="funcionario-cargo" required>
@@ -69,7 +136,7 @@
                             <input type="number" id="funcionario-salario" name="funcionario-salario" placeholder="0.00" step="0.01" min="0">
                         </div>
                         <div class="btn-group">
-                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <button type="button" onclick="cadastrarFuncionario(event)" class="btn btn-primary">Salvar</button>
                             <button type="reset" class="btn btn-secondary">Limpar</button>
                         </div>
                     </form>
@@ -97,24 +164,12 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td data-label="ID">1</td>
-                                <td data-label="Nome">Maria Silva</td>
-                                <td data-label="CPF">123.456.789-00</td>
-                                <td data-label="Telefone">(11) 99999-8888</td>
-                                <td data-label="Email">maria@email.com</td>
-                                <td data-label="Cargo">Farmacêutica</td>
-                                <td data-label="Ações" class="action-btns">
-                                    <a href="#" class="edit-btn">Editar</a>
-                                    <a href="#" class="delete-btn">Excluir</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td data-label="ID">2</td>
-                                <td data-label="Nome">João Santos</td>
-                                <td data-label="CPF">987.654.321-00</td>
-                                <td data-label="Telefone">(11) 99999-7777</td>
-                                <td data-label="Email">joao@email.com</td>
-                                <td data-label="Cargo">Atendente</td>
+                                <td data-label="ID" id="funcionario.id"></td>
+                                <td data-label="Nome" id="funcionario.nome"></td>
+                                <td data-label="CPF" id="funcionario.cpf"></td>
+                                <td data-label="Telefone" id="funcionario.telefone"></td>
+                                <td data-label="Email" id="funcionario.email"></td>
+                                <td data-label="Cidade/UF" id=".cidade"></td>
                                 <td data-label="Ações" class="action-btns">
                                     <a href="#" class="edit-btn">Editar</a>
                                     <a href="#" class="delete-btn">Excluir</a>

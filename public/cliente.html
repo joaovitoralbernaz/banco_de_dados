@@ -19,7 +19,7 @@
                 <span></span>
             </div>
             <div class="nav-links" id="navLinks">
-                <a href="index.html">Início</a>
+                <a href="public/index.html">Início</a>
                 <a href="index.html">Cadastros</a>
                 <a href="movimento.html">Movimento</a>
                 <a href="relatorio.html">Relatório</a>
@@ -41,11 +41,11 @@
                         </div>
                         <div class="form-group">
                             <label for="cliente-cpf">CPF</label>
-                            <input type="text" id="cliente-cpf" name="cliente-cpf" placeholder="000.000.000-00" required>
+                            <input maxlength="14" type="text" id="cliente-cpf" name="cliente-cpf" placeholder="000.000.000-00" required>
                         </div>
                         <div class="form-group">
                             <label for="cliente-telefone">Telefone</label>
-                            <input type="text" id="cliente-telefone" name="cliente-telefone" placeholder="(00) 00000-0000">
+                            <input maxlength="15" type="text" id="cliente-telefone" name="cliente-telefone" placeholder="(00) 00000-0000">
                         </div>
                         <div class="form-group">
                             <label for="cliente-email">E-mail</label>
@@ -124,7 +124,7 @@
                         </fieldset>
                         
                         <div class="btn-group">
-                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <button type="button" onclick="cadastrarCliente(event)" class="btn btn-primary">Salvar</button>
                             <button type="reset" class="btn btn-secondary">Limpar</button>
                         </div>
                     </form>
@@ -133,7 +133,7 @@
                 <div class="search-container">
                     <form action="#" method="get">
                         <input type="text" id="buscar-cliente" name="buscar-cliente" class="search-input" placeholder="Buscar cliente...">
-                        <button type="submit" class="search-btn">Buscar</button>
+                        <button type="button" onclick="listarClientes()" class="search-btn">Buscar</button>
                     </form>
                 </div>
 
@@ -150,32 +150,10 @@
                                 <th>Ações</th>
                             </tr>
                         </thead>
-                         <tbody>
-                            <tr>
-                                <td data-label="ID" id="cliente.id">1</td>
-                                <td data-label="Nome" id="cliente.nome">Maria Silva</td>
-                                <td data-label="CPF" id="cliente.cpf">123.456.789-00</td>
-                                <td data-label="Telefone" id="cliente.telefone">(11) 99999-8888</td>
-                                <td data-label="Email" id="cliente.email">maria@email.com</td>
-                                <td data-label="Cidade/UF" id="cliente.cidade">São Paulo/SP</td>
-                                <td data-label="Ações" class="action-btns">
-                                    <a href="#" class="edit-btn">Editar</a>
-                                    <a href="#" class="delete-btn">Excluir</a>
-                                </td>
-                            </tr>
-                            <!--<tr>
-                                <td data-label="ID">2</td>
-                                <td data-label="Nome">João Santos</td>
-                                <td data-label="CPF">987.654.321-00</td>
-                                <td data-label="Telefone">(11) 99999-7777</td>
-                                <td data-label="Email">joao@email.com</td>
-                                <td data-label="Cidade/UF">Rio de Janeiro/RJ</td>
-                                <td data-label="Ações" class="action-btns">
-                                    <a href="#" class="edit-btn">Editar</a>
-                                    <a href="#" class="delete-btn">Excluir</a>
-                                </td>
-                            </tr>-->
-                        </tbody> 
+                         <tbody  id="tabela-clientes">
+
+            
+                         </tbody> 
                     </table>
                 </div>
             </div>
