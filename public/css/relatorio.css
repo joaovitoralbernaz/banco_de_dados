@@ -40,15 +40,16 @@ header {
 }
 
 .nav-links a {
-    color: white;
+    color: rgb(255, 255, 255);
     text-decoration: none;
+    font-weight: 500;
     padding: 0.5rem;
     border-radius: 4px;
     transition: background-color 0.3s;
 }
 
 .nav-links a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(202, 202, 202, 0.2);
 }
 
 /* Ajuste para telas menores */
