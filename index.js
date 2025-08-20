@@ -38,6 +38,28 @@ db.serialize(() => {
         )
     `);
 
+    db.run(`
+        CREATE TABLE IF NOT EXISTS fornecedor(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            cnpj TEXT NOT NULL UNIQUE,
+            telefone TEXT,
+   
+            email TEXT,
+            logradouro VARCHAR(50) NOT NULL,
+            numero VARCHAR(5) NOT NULL,
+            complemento VARCHAR(20),
+            bairro VARCHAR(30) NOT NULL,
+            cidade VARCHAR(20) NOT NULL,
+            estado VARCHAR(2) NOT NULL,
+            cep VARCHAR(9) NOT NULL,
+            contatoNome VARCHAR(50) NOT NULL,
+            contatoCargo VARCHAR(50) NOT NULL,
+            contatoTelefone VARCHAR(15) NOT NULL,
+            contatoEmail VARCHAR(50) NOT NULL
+        )
+    `);
+
 
     console.log("Tabelas criadas com sucesso.");
 });
@@ -55,10 +77,6 @@ app.post("/clientes", (req, res) => {
     if (!nome || !cpf) {
         return res.status(400).json({ message: "Nome e CPF são obrigatórios." });
     }
-
-
-
-
     const query = `INSERT INTO clientes (nome, cpf, email, telefone, logradouro, numero, complemento, bairro, cidade, estado, cep) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     db.run(
         query,
@@ -98,6 +116,25 @@ app.get('/clientes', (req, res) => {
             res.json(rows);  // Retorna todos os clientes
         });
     }
+});
+
+// Cadastrar fornecedor
+app.post("/fornecedor", (req, res) => {
+    const { nome, cnpj, telefone, email, logradouro, numero, complemento, bairro, cidade, estado, cep, contatoNome, contatoCargo, contatoTelefone, contatoEmail } = req.body;
+
+    // Validações básicas
+    if (!nome || !cpf) {
+        return res.status(400).json({ message: "Nome e CPF são obrigatórios." });
+    }
+    const query = `INSERT INTO fornecedor (nome, cnpj, telefone, email, logradouro, numero, complemento, bairro, cidade, estado, cep, contatoNome, contatoCargo, contatoTelefone, contatoEmail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    db.run(
+        query,
+        [nome, cnpj, telefone, email, logradouro, numero, complemento, bairro, cidade, estado, cep, contatoNome, contatoCargo, contatoTelefone, contatoEmail], function (err) {
+        if (err) {
+            return res.status(500).send('Erro ao cadastrar fornecedor....');
+        }
+        res.status(201).send({ id: this.lastID, message: 'Fornecedor cadastrado com sucesso.' });
+    });
 });
 
 

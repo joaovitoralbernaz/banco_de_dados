@@ -1,15 +1,25 @@
 async function cadastrarFornecedor(event) {
     event.preventDefault();
-    let nome_fornecedor = document.getElementById("nome").value;
+    
     const fornecedor = {
-        nome: nome_fornecedor,
-        telefone: document.getElementById("telefone").value,
-        email: document.getElementById("email").value,
-        cpf: document.getElementById("cpf").value,
-        endereco: document.getElementById("endereco").value,
+        nome: document.getElementById("fornecedor-nome").value,
+        cnpj: document.getElementById("fornecedor-cnpj").value,
+        telefone: document.getElementById("fornecedor-telefone").value,
+        email: document.getElementById("fornecedor-email").value,
+        logradouro: document.getElementById("fornecedor-logradouro").value,
+        numero: document.getElementById("fornecedor-numero").value,
+        complemento: document.getElementById("fornecedor-complemento").value,
+        bairro: document.getElementById("fornecedor-bairro").value,
+        cidade: document.getElementById("fornecedor-cidade").value,
+        estado: document.getElementById("fornecedor-estado").value,
+        cep: document.getElementById("fornecedor-cep").value,
+        contatoNome: document.getElementById("fornecedor-contato-nome").value,
+        contatoCargo: document.getElementById("fornecedor-contato-cargo").value,
+        contatoTelefone: document.getElementById("fornecedor-contato-telefone").value,
+        contatoEmail: document.getElementById("fornecedor-contato-email").value
     };
     try {
-        const response = await fetch("/fornecedores", {
+        const response = await fetch("/fornecedor", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -28,13 +38,13 @@ async function cadastrarFornecedor(event) {
         alert("Erro ao cadastrar fornecedor.");
     }
 }
-// Função para listar todos os fornecedores ou buscar fornecedores por CPF
+// Função para listar todos os fornecedores ou buscar fornecedores por CNPJ
 async function listarFornecedores() {
-    const cpf = document.getElementById("cpf").value.trim(); // Pega o valor do CPF digitado no input
+    const cnpj = document.getElementById("buscar-fornecedor").value.trim(); // Pega o valor do CNPJ digitado no input
     let url = "/fornecedores"; // URL padrão para todos os fornecedores
-    if (cpf) {
-        // Se CPF foi digitado, adiciona o parâmetro de consulta
-        url += `?cpf=${cpf}`;
+    if (cnpj) {
+        // Se CNPJ foi digitado, adiciona o parâmetro de consulta
+        url += `?cnpj=${cnpj}`;
     }
     try {
         const response = await fetch(url);
@@ -51,10 +61,12 @@ async function listarFornecedores() {
                 linha.innerHTML = `
                     <td>${fornecedor.id}</td>
                     <td>${fornecedor.nome}</td>
-                    <td>${fornecedor.cpf}</td>
-                    <td>${fornecedor.email}</td>
+                    <td>${fornecedor.cnpj}</td>
                     <td>${fornecedor.telefone}</td>
-                    <td>${fornecedor.endereco}</td>
+                    <td>${fornecedor.email}</td>
+                    <td>${fornecedor.cidade}/${fornecedor.estado}</td>
+                    <td>${fornecedor.contatoNome}/${fornecedor.contatoTelefone}</td>
+                    
                 `;
                 tabela.appendChild(linha);
             });
