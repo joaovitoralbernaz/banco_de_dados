@@ -1,4 +1,4 @@
-async function cadastrarCliente(event) {
+async function cadastrarProduto(event) {
     event.preventDefault();
     
     const produto = {
@@ -6,7 +6,12 @@ async function cadastrarCliente(event) {
         codigo: document.getElementById("produto-codigo").value,
         categoria: document.getElementById("produto-categoria").value,
         estoque_atual: document.getElementById("produto-estoque").value,
-        preco: document.getElementById("produto-preco").value,
+        quantidade_minima: document.getElementById("produto-quantidade-minima").value,
+        preco_anterior: document.getElementById("produto-preco-anterior").value,
+        preco_atual: document.getElementById("produto-preco-atual").value,
+        preco_medio: document.getElementById("produto-preco-medio").value,
+        data_cadastro: document.getElementById("produto-data-cadastro").value,
+        lote: document.getElementById("produto-lote").value,
         fornecedor: document.getElementById("produto-fornecedor").value,
         descricao: document.getElementById("produto-descricao").value
         // Adicione outros campos conforme necessário
@@ -23,9 +28,8 @@ async function cadastrarCliente(event) {
 
         const result = await response.json();
         if (response.ok) {
-            alert("Produto3,
-                  cadastrado com sucesso!");
-            document.getElementById("cliente-form").reset();
+            alert("Produto cadastrado com sucesso!");
+            document.getElementById("produto-form").reset();
         } else {
             alert(`Erro: ${result.message}`);
         }
@@ -34,88 +38,57 @@ async function cadastrarCliente(event) {
         alert("Erro ao cadastrar cliente.");
     }
 }
-// Função para listar todos os clientes ou buscar clientes por CPF
-async function listarClientes() {
-    const cpf = document.getElementById('cpf').value.trim();  // Pega o valor do CPF digitado no input
+// Função para listar todos os produtos por codigo
+async function listarProdutos() {
+    const codigo = document.getElementById('buscar-produto').value.trim();
 
-    let url = '/clientes';  // URL padrão para todos os clientes
+    let url = '/produtos';  // URL padrão para todos os produtos
 
-    if (cpf) {
-        // Se CPF foi digitado, adiciona o parâmetro de consulta
-        url += `?cpf=${cpf}`;
+    if (codigo) {
+        // Se código foi digitado, adiciona o parâmetro de consulta
+        url += `?produto-codigo=${codigo}`;
     }
 
     try {
         const response = await fetch(url);
-        const clientes = await response.json();
+        const produtos = await response.json();
 
-        const tabela = document.getElementById('tabela-clientes');
+        const tabela = document.getElementById('tabela-produtos');
         tabela.innerHTML = ''; // Limpa a tabela antes de preencher
 
-        if (clientes.length === 0) {
-            // Caso não encontre clientes, exibe uma mensagem
-            tabela.innerHTML = '<tr><td colspan="6">Nenhum cliente encontrado.</td></tr>';
+        if (produtos.length === 0) {
+            // Caso não encontre produtos, exibe uma mensagem
+            tabela.innerHTML = '<tr><td colspan="7">Nenhum produto encontrado.</td></tr>';
         } else {
-            clientes.forEach(cliente => {
+            produtos.forEach(produto => {
                 const linha = document.createElement('tr');
                 linha.innerHTML = `
-                    <td>${cliente.id}</td>
-                    <td>${cliente.nome}</td>
-                    <td>${cliente.cpf}</td>
-                    <td>${cliente.email}</td>
-                    <td>${cliente.telefone}</td>
-                    <td>${cliente.endereco}</td>
+                    <td>${produto.prod_id_seq}</td>
+                    <td>${produto.prod_nome}</td>
+                    <td>${produto.prod_codigo_barra}</td>
+                    <td>${produto.prod_categoria}</td>
+                    <td>${produto.prod_estoque_atual}</td>
+                    <td>R$ ${parseFloat(produto.prod_preco_atual).toFixed(2)}</td>
+                    <td>
+                        <div class="action-btns">
+                            <a href="#" class="edit-btn">Editar</a>
+                            <a href="#" class="delete-btn">Excluir</a>
+                        </div>
+                    </td>
                 `;
                 tabela.appendChild(linha);
             });
         }
     } catch (error) {
-        console.error('Erro ao listar clientes:', error);
+        console.error('Erro ao listar produtos:', error);
     }
 }
-// Função para atualizar as informações do cliente
-async function atualizarCliente() {
-    const nome = document.getElementById('nome').value;
-    const cpf = document.getElementById('cpf').value;
-    const email = document.getElementById('email').value;
-    const telefone = document.getElementById('telefone').value;
-    const endereco = document.getElementById('endereco').value;
-
-    const clienteAtualizado = {
-        nome,
-        email,
-        telefone,
-        endereco,
-        cpf
-    };
-
-    try {
-        const response = await fetch(`/clientes/cpf/${cpf}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(clienteAtualizado)
-        });
-
-        if (response.ok) {
-            alert('Cliente atualizado com sucesso!');
-        } else {
-            const errorMessage = await response.text();
-            alert('Erro ao atualizar cliente: ' + errorMessage);
-        }
-    } catch (error) {
-        console.error('Erro ao atualizar cliente:', error);
-        alert('Erro ao atualizar cliente.');
-    }
+// Function to search for products (alias for listarProdutos)
+async function buscarProdutos() {
+    await listarProdutos();
 }
 
-
-async function limpaCliente() {
-    document.getElementById('nome').value = '';
-    document.getElementById('cpf').value = '';
-    document.getElementById('email').value = '';
-    document.getElementById('telefone').value = '';
-    document.getElementById('endereco').value = '';
-
-}
+// Load products when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    listarProdutos();
+});

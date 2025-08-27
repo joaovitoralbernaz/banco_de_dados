@@ -1,25 +1,26 @@
 async function cadastrarFornecedor(event) {
     event.preventDefault();
-    
+
     const fornecedor = {
         nome: document.getElementById("fornecedor-nome").value,
         cnpj: document.getElementById("fornecedor-cnpj").value,
         telefone: document.getElementById("fornecedor-telefone").value,
         email: document.getElementById("fornecedor-email").value,
+        cep: document.getElementById("fornecedor-cep").value,
         logradouro: document.getElementById("fornecedor-logradouro").value,
         numero: document.getElementById("fornecedor-numero").value,
         complemento: document.getElementById("fornecedor-complemento").value,
         bairro: document.getElementById("fornecedor-bairro").value,
         cidade: document.getElementById("fornecedor-cidade").value,
         estado: document.getElementById("fornecedor-estado").value,
-        cep: document.getElementById("fornecedor-cep").value,
         contatoNome: document.getElementById("fornecedor-contato-nome").value,
         contatoCargo: document.getElementById("fornecedor-contato-cargo").value,
         contatoTelefone: document.getElementById("fornecedor-contato-telefone").value,
         contatoEmail: document.getElementById("fornecedor-contato-email").value
     };
+
     try {
-        const response = await fetch("/fornecedor", {
+        const response = await fetch("/fornecedores", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -30,6 +31,7 @@ async function cadastrarFornecedor(event) {
         if (response.ok) {
             alert("Fornecedor cadastrado com sucesso!");
             document.getElementById("fornecedor-form").reset();
+            listarFornecedores();
         } else {
             alert(`Erro: ${result.message}`);
         }
@@ -38,23 +40,23 @@ async function cadastrarFornecedor(event) {
         alert("Erro ao cadastrar fornecedor.");
     }
 }
-// Função para listar todos os fornecedores ou buscar fornecedores por CNPJ
+
 async function listarFornecedores() {
-    const cnpj = document.getElementById("buscar-fornecedor").value.trim(); // Pega o valor do CNPJ digitado no input
-    let url = "/fornecedores"; // URL padrão para todos os fornecedores
+    const cnpj = document.getElementById("buscar-fornecedor").value.trim();
+    let url = "/fornecedores";
+
     if (cnpj) {
-        // Se CNPJ foi digitado, adiciona o parâmetro de consulta
         url += `?cnpj=${cnpj}`;
     }
+
     try {
         const response = await fetch(url);
         const fornecedores = await response.json();
         const tabela = document.getElementById("tabela-fornecedores");
-        tabela.innerHTML = ""; // Limpa a tabela antes de preencher
+        tabela.innerHTML = "";
+
         if (fornecedores.length === 0) {
-            // Caso não encontre fornecedores, exibe uma mensagem
-            tabela.innerHTML =
-                '<tr><td colspan="6">Nenhum fornecedor encontrado.</td></tr>';
+            tabela.innerHTML = '<tr><td colspan="8">Nenhum fornecedor encontrado.</td></tr>';
         } else {
             fornecedores.forEach((fornecedor) => {
                 const linha = document.createElement("tr");
@@ -66,7 +68,9 @@ async function listarFornecedores() {
                     <td>${fornecedor.email}</td>
                     <td>${fornecedor.cidade}/${fornecedor.estado}</td>
                     <td>${fornecedor.contatoNome}/${fornecedor.contatoTelefone}</td>
-                    
+                    <td>
+                        <button class="btn" onclick="editarFornecedor('${fornecedor.cnpj}')" class="btn-editar">EDITAR</button>
+                    </td>
                 `;
                 tabela.appendChild(linha);
             });
@@ -75,30 +79,54 @@ async function listarFornecedores() {
         console.error("Erro ao listar fornecedores:", error);
     }
 }
-// Função para atualizar as informações do fornecedor
+
 async function atualizarFornecedor() {
-    const nome = document.getElementById("nome").value;
-    const cpf = document.getElementById("cpf").value;
-    const email = document.getElementById("email").value;
-    const telefone = document.getElementById("telefone").value;
-    const endereco = document.getElementById("endereco").value;
+    const nome = document.getElementById("fornecedor-nome").value;
+    const cnpj = document.getElementById("fornecedor-cnpj").value;
+    const telefone = document.getElementById("fornecedor-telefone").value;
+    const email = document.getElementById("fornecedor-email").value;
+    const cep = document.getElementById("fornecedor-cep").value;
+    const logradouro = document.getElementById("fornecedor-logradouro").value;
+    const numero = document.getElementById("fornecedor-numero").value;
+    const complemento = document.getElementById("fornecedor-complemento").value;
+    const bairro = document.getElementById("fornecedor-bairro").value;
+    const cidade = document.getElementById("fornecedor-cidade").value;
+    const estado = document.getElementById("fornecedor-estado").value;
+    const contatoNome = document.getElementById("fornecedor-contato-nome").value;
+    const contatoCargo = document.getElementById("fornecedor-contato-cargo").value;
+    const contatoTelefone = document.getElementById("fornecedor-contato-telefone").value;
+    const contatoEmail = document.getElementById("fornecedor-contato-email").value;
+
     const fornecedorAtualizado = {
         nome,
-        email,
+        cnpj,
         telefone,
-        endereco,
-        cpf,
+        email,
+        cep,
+        logradouro,
+        numero,
+        complemento,
+        bairro,
+        cidade,
+        estado,
+        contatoNome,
+        contatoCargo,
+        contatoTelefone,
+        contatoEmail
     };
+
     try {
-        const response = await fetch(`/fornecedores/cpf/${cpf}`, {
+        const response = await fetch(`/fornecedores/cnpj/${cnpj}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(fornecedorAtualizado),
         });
+
         if (response.ok) {
             alert("Fornecedor atualizado com sucesso!");
+            listarFornecedores();
         } else {
             const errorMessage = await response.text();
             alert("Erro ao atualizar fornecedor: " + errorMessage);
@@ -108,10 +136,85 @@ async function atualizarFornecedor() {
         alert("Erro ao atualizar fornecedor.");
     }
 }
+
 async function limpaFornecedor() {
-    document.getElementById("nome").value = "";
-    document.getElementById("cpf").value = "";
-    document.getElementById("email").value = "";
-    document.getElementById("telefone").value = "";
-    document.getElementById("endereco").value = "";
+    document.getElementById("fornecedor-nome").value = "";
+    document.getElementById("fornecedor-cnpj").value = "";
+    document.getElementById("fornecedor-telefone").value = "";
+    document.getElementById("fornecedor-email").value = "";
+    document.getElementById("fornecedor-cep").value = "";
+    document.getElementById("fornecedor-logradouro").value = "";
+    document.getElementById("fornecedor-numero").value = "";
+    document.getElementById("fornecedor-complemento").value = "";
+    document.getElementById("fornecedor-bairro").value = "";
+    document.getElementById("fornecedor-cidade").value = "";
+    document.getElementById("fornecedor-estado").value = "";
+    document.getElementById("fornecedor-contato-nome").value = "";
+    document.getElementById("fornecedor-contato-cargo").value = "";
+    document.getElementById("fornecedor-contato-telefone").value = "";
+    document.getElementById("fornecedor-contato-email").value = "";
+}
+
+async function editarFornecedor(cnpj) {
+    try {
+        const response = await fetch(`/fornecedores?cnpj=${cnpj}`);
+        const fornecedores = await response.json();
+
+        if (fornecedores.length > 0) {
+            const fornecedor = fornecedores[0];
+
+            document.getElementById("fornecedor-nome").value = fornecedor.nome;
+            document.getElementById("fornecedor-cnpj").value = fornecedor.cnpj;
+            document.getElementById("fornecedor-telefone").value = fornecedor.telefone;
+            document.getElementById("fornecedor-email").value = fornecedor.email;
+            document.getElementById("fornecedor-cep").value = fornecedor.cep;
+            document.getElementById("fornecedor-logradouro").value = fornecedor.logradouro;
+            document.getElementById("fornecedor-numero").value = fornecedor.numero;
+            document.getElementById("fornecedor-complemento").value = fornecedor.complemento;
+            document.getElementById("fornecedor-bairro").value = fornecedor.bairro;
+            document.getElementById("fornecedor-cidade").value = fornecedor.cidade;
+            document.getElementById("fornecedor-estado").value = fornecedor.estado;
+            document.getElementById("fornecedor-contato-nome").value = fornecedor.contatoNome;
+            document.getElementById("fornecedor-contato-cargo").value = fornecedor.contatoCargo;
+            document.getElementById("fornecedor-contato-telefone").value = fornecedor.contatoTelefone;
+            document.getElementById("fornecedor-contato-email").value = fornecedor.contatoEmail;
+            document.getElementById("btn-salvar").style.display = "none";
+            document.getElementById("btn-atualizar").style.display = "inline-block";
+            document.getElementById("btn-cancelar").style.display = "inline-block";
+
+            document.getElementById("fornecedor-cnpj").readOnly = true;
+        }
+    } catch (error) {
+        console.error("Erro ao carregar fornecedor:", error);
+        alert("Erro ao carregar dados do fornecedor.");
+    }
+}
+
+function cancelarEdicao() {
+    limpaFornecedor();
+    document.getElementById("btn-salvar").style.display = "inline-block";
+    document.getElementById("btn-atualizar").style.display = "none";
+    document.getElementById("btn-cancelar").style.display = "none";
+    document.getElementById("fornecedor-cnpj").readOnly = false;
+}
+
+async function excluirFornecedor(cnpj) {
+    if (confirm(`Tem certeza que deseja excluir o fornecedor com CNPJ ${cnpj}?`)) {
+        try {
+            const response = await fetch(`/fornecedores/cnpj/${cnpj}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('Fornecedor excluído com sucesso!');
+                listarFornecedores();
+            } else {
+                const errorMessage = await response.text();
+                alert('Erro ao excluir fornecedor: ' + errorMessage);
+            }
+        } catch (error) {
+            console.error('Erro ao excluir fornecedor:', error);
+            alert('Erro ao excluir fornecedor.');
+        }
+    }
 }

@@ -32,7 +32,7 @@
                 <h1 class="page-title">Cadastro de Funcionários</h1>
                 
                 <div class="form-container">
-                    <form action="#" method="post">
+                    <form class="form-funcionario">
                         <div class="form-group">
                             <label for="funcionario-nome">Nome Completo</label>
                             <input type="text" id="funcionario-nome" name="funcionario-nome" placeholder="Digite o nome completo" required>
@@ -117,6 +117,7 @@
                                         <option value="TO">TO</option>
                                     </select>
                                 </div>
+                               
                             </div>
                         </fieldset>
                         
@@ -145,7 +146,7 @@
                 <div class="search-container">
                     <form action="#" method="get">
                         <input type="text" id="buscar-funcionario" name="buscar-funcionario" class="search-input" placeholder="Buscar funcionário...">
-                        <button type="submit" class="search-btn">Buscar</button>
+                        <button type="button" onclick="listarFuncionarios()" class="search-btn">Buscar</button>
                     </form>
                 </div>
 
@@ -162,19 +163,8 @@
                                 <th>Ações</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="ID" id="funcionario.id"></td>
-                                <td data-label="Nome" id="funcionario.nome"></td>
-                                <td data-label="CPF" id="funcionario.cpf"></td>
-                                <td data-label="Telefone" id="funcionario.telefone"></td>
-                                <td data-label="Email" id="funcionario.email"></td>
-                                <td data-label="Cidade/UF" id=".cidade"></td>
-                                <td data-label="Ações" class="action-btns">
-                                    <a href="#" class="edit-btn">Editar</a>
-                                    <a href="#" class="delete-btn">Excluir</a>
-                                </td>
-                            </tr>
+                        <tbody class="tabela-funcionarios">
+                         
                         </tbody>
                     </table>
                 </div>

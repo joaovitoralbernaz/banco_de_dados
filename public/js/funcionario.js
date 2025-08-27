@@ -1,14 +1,10 @@
 
-////////////////////////////////////////////////////////////FUNÇÃO CADASTRO///////////////////////////////////////////////////////////
-
 async function cadastrarFuncionario(event) {
     event.preventDefault();
-
 
     const funcionario = {
         func_nome: document.getElementById("funcionario-nome").value,
         func_cpf: document.getElementById("funcionario-cpf").value,
-
         func_email: document.getElementById("funcionario-email").value,
         func_telefone: document.getElementById("funcionario-telefone").value,    
         func_logradouro: document.getElementById("funcionario-logradouro").value,
@@ -23,7 +19,7 @@ async function cadastrarFuncionario(event) {
     };
 
     try {
-        const response = await fetch("/funcionarios", {
+        const response = await fetch("/funcionario", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -34,8 +30,8 @@ async function cadastrarFuncionario(event) {
         const result = await response.json();
         if (response.ok) {
             alert("Funcionario cadastrado com sucesso!");
-            document.querySelector("form").reset();
-            listarFuncionario();
+            document.querySelector(".form-funcionario").reset();
+            listarFuncionarios();
         } else {
             alert(`Erro: ${result.message}`);
         }
@@ -45,14 +41,12 @@ async function cadastrarFuncionario(event) {
     }
 }
 
-// Função para listar todos os funcionarios ou buscar funcionarios por CPF
 async function listarFuncionarios() {
-    const cpf = document.getElementById('cpf').value.trim();  // Pega o valor do CPF digitado no input
+    const cpf = document.getElementById('buscar-funcionario').value.trim();
 
-    let url = '/funcionarios';  // URL padrão para todos os clientes
+    let url = '/funcionarios';
 
     if (cpf) {
-        // Se CPF foi digitado, adiciona o parâmetro de consulta
         url += `?cpf=${cpf}`;
     }
 
@@ -60,25 +54,24 @@ async function listarFuncionarios() {
         const response = await fetch(url);
         const funcionarios = await response.json();
 
-        const tabela = document.getElementById('tabela-funcionarios');
-        tabela.innerHTML = ''; // Limpa a tabela antes de preencher
+        const tabela = document.querySelector('.tabela-funcionarios');
+        tabela.innerHTML = '';
 
         if (funcionarios.length === 0) {
-            // Caso não encontre funcionarios, exibe uma mensagem
-            tabela.innerHTML = '<tr><td colspan="6">Nenhum funcionario encontrado.</td></tr>';
+            tabela.innerHTML = '<tr><td colspan="7">Nenhum funcionario encontrado.</td></tr>';
         } else {
             funcionarios.forEach(funcionario => {
                 const linha = document.createElement('tr');
                 linha.innerHTML = `
-                    <td>${funcionario.id}</td>
-                    <td>${funcionario.nome}</td>
-                    <td>${funcionario.cpf}</td>
-                    <td>${funcionario.telefone}</td>
-                    <td>${funcionario.email}</td>
-                    <td>${funcionario.cidade}/${funcionario.estado}</td>
-
-
-
+                    <td>${funcionario.func_id}</td>
+                    <td>${funcionario.func_nome}</td>
+                    <td>${funcionario.func_cpf}</td>
+                    <td>${funcionario.func_telefone}</td>
+                    <td>${funcionario.func_email}</td>
+                    <td>${funcionario.func_cargo}</td>
+                    <td>
+                        <button class="btn" onclick="editarFuncionario('${funcionario.func_cpf}')">EDITAR</button>
+                    </td>
                 `;
                 tabela.appendChild(linha);
             });
@@ -87,25 +80,23 @@ async function listarFuncionarios() {
         console.error('Erro ao listar funcionarios:', error);
     }
 }
-//////////////////////////////////////////////////////////FUNÇÃO ATUALIZAR///////////////////////////////////////////////////////////
 
-// Função para atualizar as informações do funcionario
 async function atualizarFuncionario() {
-        func_nome= document.getElementById("funcionario-nome").value,
-        func_cpf= document.getElementById("funcionario-cpf").value,
-        func_email= document.getElementById("funcionario-email").value,
-        func_telefone= document.getElementById("funconario-telefone").value,
-        func_logradouro= document.getElementById("funcionario-logradouro").value,
-        func_numero= document.getElementById("funcionario-numero").value,
-        func_complemento= document.getElementById("funcionario-complemento").value,
-        func_bairro= document.getElementById("funcionario-bairro").value,
-        func_cidade= document.getElementById("funcionario-cidade").value,
-        func_estado= document.getElementById("funcionario-estado").value,
-        func_cep= document.getElementById("funcionario-cep").value,
-        func_cargo= document.getElementById("funcionario-cargo").value
+    const func_nome = document.getElementById("funcionario-nome").value;
+    const func_cpf = document.getElementById("funcionario-cpf").value;
+    const func_email = document.getElementById("funcionario-email").value;
+    const func_telefone = document.getElementById("funcionario-telefone").value;
+    const func_logradouro = document.getElementById("funcionario-logradouro").value;
+    const func_numero = document.getElementById("funcionario-numero").value;
+    const func_complemento = document.getElementById("funcionario-complemento").value;
+    const func_bairro = document.getElementById("funcionario-bairro").value;
+    const func_cidade = document.getElementById("funcionario-cidade").value;
+    const func_estado = document.getElementById("funcionario-estado").value;
+    const func_cep = document.getElementById("funcionario-cep").value;
+    const func_cargo = document.getElementById("funcionario-cargo").value;
+    const func_salario = document.getElementById("funcionario-salario").value;
 
-
-    const FuncionarioAtualizado = {
+    const funcionarioAtualizado = {
         func_nome,
         func_cpf,
         func_email,
@@ -117,13 +108,12 @@ async function atualizarFuncionario() {
         func_cidade,
         func_estado,
         func_cep,
-        func_cargo
-
-
+        func_cargo,
+        func_salario
     };
 
     try {
-        const response = await fetch(`/funcionarios/cpf/${cpf}`, {
+        const response = await fetch(`/funcionarios/cpf/${func_cpf}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -133,16 +123,44 @@ async function atualizarFuncionario() {
 
         if (response.ok) {
             alert('Funcionario atualizado com sucesso!');
+            listarFuncionarios();
         } else {
             const errorMessage = await response.text();
             alert('Erro ao atualizar funcionario: ' + errorMessage);
         }
     } catch (error) {
         console.error('Erro ao atualizar funcionario:', error);
-        alert('Erro ao atualizar fucionario.');
+        alert('Erro ao atualizar funcionario.');
     }
 }
 
+async function editarFuncionario(cpf) {
+    try {
+        const response = await fetch(`/funcionarios?cpf=${cpf}`);
+        const funcionarios = await response.json();
+
+        if (funcionarios.length > 0) {
+            const funcionario = funcionarios[0];
+
+            document.getElementById("funcionario-nome").value = funcionario.func_nome;
+            document.getElementById("funcionario-cpf").value = funcionario.func_cpf;
+            document.getElementById("funcionario-email").value = funcionario.func_email;
+            document.getElementById("funcionario-telefone").value = funcionario.func_telefone;
+            document.getElementById("funcionario-logradouro").value = funcionario.func_logradouro;
+            document.getElementById("funcionario-numero").value = funcionario.func_numero;
+            document.getElementById("funcionario-complemento").value = funcionario.func_complemento;
+            document.getElementById("funcionario-bairro").value = funcionario.func_bairro;
+            document.getElementById("funcionario-cidade").value = funcionario.func_cidade;
+            document.getElementById("funcionario-estado").value = funcionario.func_estado;
+            document.getElementById("funcionario-cep").value = funcionario.func_cep;
+            document.getElementById("funcionario-cargo").value = funcionario.func_cargo;
+            document.getElementById("funcionario-salario").value = funcionario.func_salario;
+        }
+    } catch (error) {
+        console.error("Erro ao carregar funcionario:", error);
+        alert("Erro ao carregar dados do funcionario.");
+    }
+}
 
 async function limpaFuncionario() {
     document.getElementById('funcionario-nome').value = '';
@@ -156,6 +174,6 @@ async function limpaFuncionario() {
     document.getElementById('funcionario-cidade').value = '';
     document.getElementById('funcionario-estado').value = '';
     document.getElementById('funcionario-cep').value = '';
-    document.getElementById('funcionario_cargo').value = '';
-
+    document.getElementById('funcionario-cargo').value = '';
+    document.getElementById('funcionario-salario').value = '';
 }
