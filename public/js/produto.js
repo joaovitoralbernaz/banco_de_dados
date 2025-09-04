@@ -35,7 +35,7 @@ async function cadastrarProduto(event) {
         }
     } catch (err) {
         console.error("Erro na solicitação:", err);
-        alert("Erro ao cadastrar cliente.");
+        alert("Erro ao cadastrar produto.");
     }
 }
 // Função para listar todos os produtos por codigo
@@ -83,12 +83,3 @@ async function listarProdutos() {
         console.error('Erro ao listar produtos:', error);
     }
 }
-// Function to search for products (alias for listarProdutos)
-async function buscarProdutos() {
-    await listarProdutos();
-}
-
-// Load products when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    listarProdutos();
-});

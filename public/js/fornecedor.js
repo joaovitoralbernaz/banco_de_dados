@@ -198,23 +198,3 @@ function cancelarEdicao() {
     document.getElementById("fornecedor-cnpj").readOnly = false;
 }
 
-async function excluirFornecedor(cnpj) {
-    if (confirm(`Tem certeza que deseja excluir o fornecedor com CNPJ ${cnpj}?`)) {
-        try {
-            const response = await fetch(`/fornecedores/cnpj/${cnpj}`, {
-                method: 'DELETE'
-            });
-
-            if (response.ok) {
-                alert('Fornecedor excluído com sucesso!');
-                listarFornecedores();
-            } else {
-                const errorMessage = await response.text();
-                alert('Erro ao excluir fornecedor: ' + errorMessage);
-            }
-        } catch (error) {
-            console.error('Erro ao excluir fornecedor:', error);
-            alert('Erro ao excluir fornecedor.');
-        }
-    }
-}

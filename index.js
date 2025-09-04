@@ -93,6 +93,39 @@ db.serialize(() => {
             )
     `);
 
+       db.run(`
+            CREATE TABLE IF NOT EXISTS venda (
+            venda_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            cli_id INTEGER NOT NULL,
+            func_id INTEGER NOT NULL, 
+            venda_valor DECIMAL(10, 2) NOT NULL,
+            venda_produto TEXT NOT NULL,
+            venda_funcionario TEXT NOT NULL,
+            venda_forma_pagamento TEXT NOT NULL,
+            venda_data DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            venda_total DECIMAL(10,2) NOT NULL,
+            FOREIGN KEY (cli_id) REFERENCES clientes(id),
+            FOREIGN KEY (func_id) REFERENCES funcionario(func_id)
+            )
+    `);
+
+        db.run(`
+            CREATE TABLE IF NOT EXISTS cliente_movimento (
+            cli_mov_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            cli_id INTEGER NOT NULL,
+            func_id INTEGER,
+            cli_mov_tipo TEXT NOT NULL,
+            cli_mov_descricao TEXT NOT NULL,
+            cli_mov_valor DECIMAL(10, 2) NOT NULL,
+            cli_mov_data DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            cli_mov_forma_pagamento TEXT NOT NULL,
+            cli_mov_documento TEXT NOT NULL,
+            cli_mov_status TEXT NOT NULL,
+            FOREIGN KEY (cli_id) REFERENCES clientes(id),
+            FOREIGN KEY (func_id) REFERENCES funcionario(func_id)
+            )
+     `);
+
 
     console.log("Tabelas criadas com sucesso.");
 });
@@ -107,7 +140,7 @@ app.post("/clientes", (req, res) => {
     const query = `INSERT INTO clientes (nome, cpf, email, telefone, logradouro, numero, complemento, bairro, cidade, estado, cep) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     db.run(query, [nome, cpf, email, telefone, logradouro, numero, complemento, bairro, cidade, estado, cep], function (err) {
         if (err) {
-            return res.status(500).json({ message: 'Erro ao cadastrar cliente.' });
+            return res.status(500).json({ message: 'Erro ao cadastrar cliente...' });
         }
         res.status(201).json({ id: this.lastID, message: 'Cliente cadastrado com sucesso.' });
     });
@@ -121,7 +154,7 @@ app.get('/clientes', (req, res) => {
         db.all(query, [`%${cpf}%`], (err, rows) => {
             if (err) {
                 console.error(err);
-                return res.status(500).json({ message: 'Erro ao buscar clientes.' });
+                return res.status(500).json({ message: 'Erro ao buscar clientes...' });
             }
             res.json(rows);
         });
@@ -130,12 +163,54 @@ app.get('/clientes', (req, res) => {
         db.all(query, (err, rows) => {
             if (err) {
                 console.error(err);
-                return res.status(500).json({ message: 'Erro ao buscar clientes.' });
+                return res.status(500).json({ message: 'Erro ao buscar clientes...' });
             }
             res.json(rows);
         });
     }
 });
+
+// Rota para cadastrar um novo funcionario
+app.post("/funcionario", (req, res) => {
+    const { func_nome, func_cpf, func_email, func_telefone, func_logradouro, func_numero, func_complemento, func_bairro, func_cidade, func_estado, func_cep, func_cargo, func_salario } = req.body;
+
+    if (!func_nome || !func_cpf) {
+        return res.status(400).json({ message: "Nome e CPF são obrigatórios." });
+    }
+
+    const query = `INSERT INTO funcionario (func_nome, func_cpf, func_email, func_telefone, func_logradouro, func_numero, func_complemento, func_bairro, func_cidade, func_estado, func_cep, func_cargo, func_salario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    db.run(query, [func_nome, func_cpf, func_email, func_telefone, func_logradouro, func_numero, func_complemento, func_bairro, func_cidade, func_estado, func_cep, func_cargo, func_salario], function (err) {
+        if (err) {
+            return res.status(500).json({ message: 'Erro ao cadastrar funcionario...' });
+        }
+        res.status(201).json({ id: this.lastID, message: 'Funcionario cadastrado com sucesso.' });
+    });
+});
+// Rota para buscar funcionario por CPF
+app.get('/funcionarios', (req, res) => {
+    const cpf = req.query.cpf || '';
+
+    if (cpf) {
+        const query = `SELECT * FROM funcionario WHERE func_cpf LIKE ?`;
+        db.all(query, [`%${cpf}%`], (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'Erro ao buscar funcionario...' });
+            }
+            res.json(rows);
+        });
+    } else {
+        const query = `SELECT * FROM funcionario`;
+        db.all(query, (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'Erro ao buscar funcionario...' });
+            }
+            res.json(rows);
+        });
+    }
+});
+
 // Rota para atualizar um cliente por CPF
 app.put('/clientes/cpf/:cpf', (req, res) => {
     const { cpf } = req.params;
@@ -145,10 +220,10 @@ app.put('/clientes/cpf/:cpf', (req, res) => {
 
     db.run(query, [nome, email, telefone, logradouro, numero, complemento, bairro, cidade, estado, cep, cpf], function (err) {
         if (err) {
-            return res.status(500).json({ message: 'Erro ao atualizar cliente.' });
+            return res.status(500).json({ message: 'Erro ao atualizar cliente...' });
         }
         if (this.changes === 0) {
-            return res.status(404).json({ message: 'Cliente não encontrado.' });
+            return res.status(404).json({ message: 'Cliente não encontrado...' });
         }
         res.json({ message: 'Cliente atualizado com sucesso.' });
     });
@@ -166,7 +241,7 @@ app.post("/fornecedores", (req, res) => {
     db.run(query, [nome, cnpj, telefone, email, cep, logradouro, numero, complemento, bairro, cidade, estado, contatoNome, contatoCargo, contatoTelefone, contatoEmail], function (err) {
         if (err) {
             console.error("Erro ao cadastrar fornecedor:", err);
-            return res.status(500).json({ message: 'Erro ao cadastrar fornecedor.' });
+            return res.status(500).json({ message: 'Erro ao cadastrar fornecedor...' });
         }
         res.status(201).json({ id: this.lastID, message: 'Fornecedor cadastrado com sucesso.' });
     });
@@ -180,7 +255,7 @@ app.get('/fornecedores', (req, res) => {
         db.all(query, [`%${cnpj}%`], (err, rows) => {
             if (err) {
                 console.error(err);
-                return res.status(500).json({ message: 'Erro ao buscar fornecedores.' });
+                return res.status(500).json({ message: 'Erro ao buscar fornecedores...' });
             }
             res.json(rows);
         });
@@ -189,7 +264,7 @@ app.get('/fornecedores', (req, res) => {
         db.all(query, (err, rows) => {
             if (err) {
                 console.error(err);
-                return res.status(500).json({ message: 'Erro ao buscar fornecedores.' });
+                return res.status(500).json({ message: 'Erro ao buscar fornecedores...' });
             }
             res.json(rows);
         });
@@ -207,10 +282,10 @@ app.put('/fornecedores/cnpj/:cnpj', (req, res) => {
     db.run(query, [nome, telefone, email, cep, logradouro, numero, complemento, bairro, cidade, estado, contatoNome, contatoCargo, contatoTelefone, contatoEmail, cnpj], function (err) {
         if (err) {
             console.error("Erro ao atualizar fornecedor:", err);
-            return res.status(500).json({ message: 'Erro ao atualizar fornecedor.' });
+            return res.status(500).json({ message: 'Erro ao atualizar fornecedor...' });
         }
         if (this.changes === 0) {
-            return res.status(404).json({ message: 'Fornecedor não encontrado.' });
+            return res.status(404).json({ message: 'Fornecedor não encontrado...' });
         }
         res.json({ message: 'Fornecedor atualizado com sucesso.' });
     });
@@ -227,7 +302,7 @@ app.post("/produto", (req, res) => {
     db.run(query, [nome, codigo, categoria, estoque_atual, quantidade_minima, preco_anterior, preco_atual, preco_medio, data_cadastro, lote, fornecedor, descricao], function (err) {
         if (err) {
             console.error("Erro ao cadastrar produto:", err);
-            return res.status(500).json({ message: 'Erro ao cadastrar produto.' });
+            return res.status(500).json({ message: 'Erro ao cadastrar produto...' });
         }
         res.status(201).json({ id: this.lastID, message: 'Produto cadastrado com sucesso.' });
     });
@@ -242,7 +317,7 @@ app.get('/produtos', (req, res) => {
         db.all(query, [`%${codigo}%`], (err, rows) => {
             if (err) {
                 console.error(err);
-                return res.status(500).json({ message: 'Erro ao buscar produtos.' });
+                return res.status(500).json({ message: 'Erro ao buscar produtos...' });
             }
             res.json(rows);
         });
@@ -251,7 +326,7 @@ app.get('/produtos', (req, res) => {
         db.all(query, (err, rows) => {
             if (err) {
                 console.error(err);
-                return res.status(500).json({ message: 'Erro ao buscar produtos.' });
+                return res.status(500).json({ message: 'Erro ao buscar produtos...' });
             }
             res.json(rows);
         });
